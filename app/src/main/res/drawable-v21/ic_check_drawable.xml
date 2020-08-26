@@ -13,6 +13,6 @@
       android:strokeLineJoin="round"
       android:strokeWidth="2"
       android:fillColor="#00000000"
-      android:strokeColor="#fff"
+      android:strokeColor="#1EF30F"
       android:strokeLineCap="round"/>
 </vector>

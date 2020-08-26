@@ -27,7 +27,8 @@
 
                 android:background="@drawable/bg_circle_pink"
 
-                android:id="@+id/delete"/>
+                android:id="@+id/delete"
+                android:layout_marginRight="10dp" />
             <ImageButton
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
@@ -40,7 +41,8 @@
 android:rotation="180"
                 android:background="@drawable/bg_circle_blue"
 
-                android:id="@+id/back"/>
+                android:id="@+id/back"
+                android:layout_marginLeft="10dp" />
             <ImageView
                 android:layout_marginTop="60dp"
                 android:id="@+id/img"
