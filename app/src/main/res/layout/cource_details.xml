@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="20dp"
+        android:background="#fff"
+        app:cardCornerRadius="15dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageButton
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_delete"
+
+                android:background="@drawable/bg_circle_pink"
+
+                android:id="@+id/delete"/>
+            <ImageButton
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_back_ar"
+android:rotation="180"
+                android:background="@drawable/bg_circle_blue"
+
+                android:id="@+id/back"/>
+            <ImageView
+                android:layout_marginTop="60dp"
+                android:id="@+id/img"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/cat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:text="cat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img"
+                android:id="@+id/name"
+                android:layout_marginLeft="10dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:weightSum="3">
+                <ImageButton
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_back_ar"
+                    android:rotation="180"
+                    android:background="@drawable/bg_circle_grey"
+                   android:layout_marginStart="10dp"
+                    android:id="@+id/peviause"
+                    android:layout_marginLeft="10dp" />
+                <ImageButton
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@android:drawable/ic_lock_silent_mode_off"
+
+                    android:background="@drawable/bg_circle_blue"
+                    android:id="@+id/sound"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp" />
+                <ImageButton
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_back_ar"
+                    android:background="@drawable/bg_circle_grey"
+                    android:layout_marginEnd="10dp"
+
+                    android:id="@+id/next"
+                    android:layout_marginRight="10dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
