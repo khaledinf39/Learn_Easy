@@ -1,9 +1,17 @@
 package com.kh_sof_dev.learneasy.modul;
 
 public class Course {
-    private String name,image,sound;
+    private String name,image,sound,uid;
 
     public Course() {
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {

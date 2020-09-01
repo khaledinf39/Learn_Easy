@@ -3,19 +3,14 @@ package com.kh_sof_dev.learneasy.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,9 +28,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kh_sof_dev.learneasy.MainActivity;
 import com.kh_sof_dev.learneasy.R;
 
 import java.io.File;
@@ -76,7 +71,7 @@ public class Login_activity extends AppCompatActivity implements
 //    private TextView mDetailText;
 
     private EditText mPhoneNumberField;
-    private EditText mVerificationField,email;
+    private EditText mVerificationField,name;
 
     private Button mStartButton;
     private Button mVerifyButton;
@@ -102,7 +97,7 @@ public static int account_type=2;
 
         mPhoneNumberField = (EditText) findViewById(R.id.phone);
         mVerificationField = (EditText) findViewById(R.id.code);
-        email = (EditText) findViewById(R.id.email);
+        name = (EditText) findViewById(R.id.email);
         user_info = (ConstraintLayout) findViewById(R.id.user_info);
 
         user_info.setVisibility(View.VISIBLE);
@@ -260,14 +255,19 @@ public static int account_type=2;
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-FirebaseDatabase database=FirebaseDatabase.getInstance();
+                            FirebaseDatabase database=FirebaseDatabase.getInstance();
                             FirebaseUser user = task.getResult().getUser();
                             DatabaseReference reference=database.getReference("Users").child(user.getUid());
-                            String email_=email.getText().toString();
+                            String Fullname=name.getText().toString();
 
                             Map<String, Object> map= new HashMap<>();
-                            map.put("email",email_);
+                            map.put("FullName",Fullname);
                             reference.updateChildren(map);
+                            FirebaseUser user1=mAuth.getCurrentUser();
+                            UserProfileChangeRequest profile=new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(Fullname)
+                                    .build();
+                            user1.updateProfile(profile);
 
                                 startActivity(new Intent(Login_activity.this, MainActivity.class));
 
@@ -359,9 +359,9 @@ FirebaseDatabase database=FirebaseDatabase.getInstance();
                 if (cred != null) {
                     if (cred.getSmsCode() != null) {
                         mVerificationField.setText(cred.getSmsCode());
-//                         dialog=new BottomSheetDialog(this);
-//                        dialog.setContentView(R.layout.popup_auth);
-//                        dialog.show();
+                         dialog=new BottomSheetDialog(this);
+                        dialog.setContentView(R.layout.popup_auth);
+                        dialog.show();
                     } else {
 //                        mVerificationField.setText(R.string.save);
                     }
@@ -425,18 +425,13 @@ FirebaseDatabase database=FirebaseDatabase.getInstance();
         switch (view.getId()) {
 
             case R.id.send_btn:
-if (account_type==2){
-    if (email.getText().toString().isEmpty() || !email.getText().toString().contains("@")){
-        email.setError(email.getHint());
+
+    if (name.getText().toString().isEmpty() || !name.getText().toString().contains("@")){
+        name.setError(name.getHint());
         return;
     }
-
-
-}
-
-
-                startPhoneNumberVerification(mPhoneNumberField.getText().toString());
-                counter_resendButton();
+      startPhoneNumberVerification(mPhoneNumberField.getText().toString());
+      counter_resendButton();
                 break;
             case R.id.verfy_btn:
                 String code = mVerificationField.getText().toString();
@@ -444,18 +439,15 @@ if (account_type==2){
                     mVerificationField.setError("Cannot be empty.");
                     return;
                 }
-//                dialog=new BottomSheetDialog(this);
-//                dialog.setm;
-//                dialog.show();
+                dialog=new BottomSheetDialog(this);
+                dialog.setContentView(R.layout.popup_auth);
+                dialog.show();
                 verifyPhoneNumberWithCode(mVerificationId, code);
                 break;
             case R.id.resend_btn:
                 resendVerificationCode(mPhoneNumberField.getText().toString(), mResendToken);
                 counter_resendButton();
                 break;
-//            case R.id.sign_out_button:
-//                signOut();
-//                break;
         }
     }
 ///////////////////////////////red doc file ///////////////////////////

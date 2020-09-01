@@ -86,7 +86,7 @@ android:rotation="180"
                     android:rotation="180"
                     android:background="@drawable/bg_circle_grey"
                    android:layout_marginStart="10dp"
-                    android:id="@+id/peviause"
+                    android:id="@+id/last"
                     android:layout_marginLeft="10dp" />
                 <ImageButton
                     app:layout_constraintEnd_toEndOf="parent"

@@ -1,10 +1,18 @@
 package com.kh_sof_dev.learneasy.modul;
 
 public class Level {
-    private String img,name;
+    private String img,name,uid;
     private Boolean block;
 
     public Level() {
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getImg() {
