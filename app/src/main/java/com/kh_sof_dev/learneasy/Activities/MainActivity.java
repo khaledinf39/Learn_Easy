@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,6 +96,8 @@ if (page==1){
                 switch (item.getItemId()){
                     case R.id.nav_home:
                         switchFGM(new HomeFragment());
+                        Log.d(TAG, "HomeFragment: " + "HomeFragment");
+
                         return true;
                     case R.id.nav_logout:
                         FirebaseAuth auth=FirebaseAuth.getInstance();
@@ -108,11 +112,12 @@ if (page==1){
         switchFGM(new HomeFragment());
 
         /////user information
-        TextView user_name=navigationView.findViewById(R.id.user_name);
-        TextView phone=navigationView.findViewById(R.id.phone);
+        View headerView = navigationView.getHeaderView(0);
+        TextView user_name=headerView.findViewById(R.id.user_name);
+        TextView phone=headerView.findViewById(R.id.phone);
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
         user_name.setText(user.getDisplayName());
-        user_name.setText(user.getPhoneNumber());
+        phone.setText(user.getPhoneNumber());
     }
     public static FragmentTransaction transaction;
     public void switchFGM(Fragment fragment) {
@@ -138,7 +143,7 @@ if (page==1){
 
     ////////////////////////////////Add new Level //////////////////////////////////////////////
     ///images
-    private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private void imageBrowse(int PICK_IMAGE_REQUEST) {
         if (EasyPermissions.hasPermissions(getApplicationContext(), galleryPermissions)) {
@@ -222,7 +227,7 @@ if (page==1){
             e.printStackTrace();
         }
 
-        final StorageReference ref = storage.getReference().child("levelsImage").child(key).child(level.getImg() + ".jpg");
+        final StorageReference ref = storage.getReference().child("levelsImage").child(level.getName() + ".jpg");
 
         final UploadTask uploadTask = ref.putStream(stream);
 
@@ -315,7 +320,7 @@ if (page==1){
             e.printStackTrace();
         }
 
-        final StorageReference ref = storage.getReference().child("CourseImage").child(key).child(course.getName() + ".jpg");
+        final StorageReference ref = storage.getReference().child("CourseImage").child(course.getName() + ".jpg");
 
         final UploadTask uploadTask = ref.putStream(stream);
 
@@ -362,7 +367,7 @@ if (page==1){
             e.printStackTrace();
         }
 
-        final StorageReference ref1 = storage.getReference().child("CourseSound").child(key).child(course.getName() + ".mp3");
+        final StorageReference ref1 = storage.getReference().child("CourseSound").child(course.getName() + ".mp3");
 
         final UploadTask uploadTask1 = ref1.putStream(stream);
 
@@ -419,11 +424,12 @@ if (page==1){
         mBottomSheetDialog.setContentView(sheetView);
         mBottomSheetDialog.show();
         final EditText text=sheetView.findViewById(R.id.name);
-        final EditText upload=sheetView.findViewById(R.id.uploadimg);
+        final Button upload=sheetView.findViewById(R.id.uploadimg);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 imageBrowse(PICK_IMAGE_REQUEST);
+                Log.d("upload","upoading");
             }
         });
 
@@ -442,7 +448,7 @@ if (page==1){
 
             }
         });
-        Button close=sheetView.findViewById(R.id.close_btn);
+        ImageView close=sheetView.findViewById(R.id.close_btn);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -470,7 +476,7 @@ if (page==1){
                imageBrowse(PICK_IMAGE_REQUEST);
             }
         });
-        final EditText uploadsound=sheetView.findViewById(R.id.uploadsound);
+        final Button uploadsound=sheetView.findViewById(R.id.uploadsound);
         uploadsound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -490,7 +496,7 @@ if (page==1){
 
             }
         });
-        Button close=sheetView.findViewById(R.id.close_btn);
+        ImageView close=sheetView.findViewById(R.id.close_btn);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

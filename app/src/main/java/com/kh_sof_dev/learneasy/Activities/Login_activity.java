@@ -426,7 +426,7 @@ public static int account_type=2;
 
             case R.id.send_btn:
 
-    if (name.getText().toString().isEmpty() || !name.getText().toString().contains("@")){
+    if (name.getText().toString().isEmpty()){
         name.setError(name.getHint());
         return;
     }

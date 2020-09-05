@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,7 @@ loading();
                 level.setUid(dataSnapshot.getKey());
                 levelList.add(level);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -78,13 +80,14 @@ loading();
         });
     }
 
-
+ProgressBar progressBar;
     RecyclerView RV;
     Context mcontext=getActivity();
     Level_adapter adapter;
     List<Level> levelList;
 
     private void init(View root) {
+        progressBar=root.findViewById(R.id.progress);
         RV=root.findViewById(R.id.RV);
         RV.setLayoutManager(new GridLayoutManager(mcontext,2));
         levelList=new ArrayList<>();
