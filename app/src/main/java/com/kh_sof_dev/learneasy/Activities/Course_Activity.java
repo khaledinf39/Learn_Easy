@@ -1,28 +1,37 @@
 package com.kh_sof_dev.learneasy.Activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -138,10 +147,7 @@ public class Course_Activity extends AppCompatActivity {
         adapter=new Course_adapter(mcontext, courseList, new Course_adapter.Selected_item() {
             @Override
             public void Onselcted(Course course,int position) {
-                Intent intent=new Intent(Course_Activity.this,CourseDetails_activity.class);
-                intent.putExtra("course_id",position);
-//                intent.putParcelableArrayListExtra("courses", (ArrayList<? extends Parcelable>) courseList);
-                startActivity(intent);
+Course_Details_pop(mcontext,position);
             }
         });
         RV.setAdapter(adapter);
@@ -210,6 +216,7 @@ public class Course_Activity extends AppCompatActivity {
             }
         }else {
             mPath_sound=data.getData().getPath();
+//            Log.d("file name",data.getType());
         }
 
 
@@ -217,6 +224,7 @@ public class Course_Activity extends AppCompatActivity {
     }
     String mPath=null;
     String mPath_sound=null;
+    String sound_url=null;
     private void save_course(TextView name) {
 
         if (name.getText().toString().isEmpty()){
@@ -310,7 +318,7 @@ public class Course_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        final StorageReference ref1 = storage.getReference().child("CourseSound").child(course.getName() + ".mp3");
+        final StorageReference ref1 = storage.getReference().child("CourseSound").child(course.getName()+".mp3");
 
         final UploadTask uploadTask1 = ref1.putStream(stream);
 
@@ -406,6 +414,123 @@ public class Course_Activity extends AppCompatActivity {
 
 
     }
+    public void Course_Details_pop(final Context mcontext, final int position){
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.cource_details, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow POPDialog = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        POPDialog.showAtLocation(RV, Gravity.CENTER, 0, 0);
+
+        /////Dispaly Course info
+        final TextView name=popupView.findViewById(R.id.name);
+        final ImageView img=popupView.findViewById(R.id.img);
+        place_course_inf(name,img,courseList.get(position));
+        final int[] MyPosition = {position};
+        final ImageButton play=popupView.findViewById(R.id.sound);
+        play.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+            play_audio();
+            }
+        });
+        final ImageButton next=popupView.findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               if (MyPosition[0]+1<courseList.size()){
+                   MyPosition[0] =MyPosition[0]+1;
+                   place_course_inf(name,img,courseList.get(MyPosition[0]));
+               }else {
+                   Toast.makeText(mcontext," Congratulation you have complete this level with successfully "
+                           ,Toast.LENGTH_SHORT).show();
+                   FirebaseDatabase database=FirebaseDatabase.getInstance();
+                   database = FirebaseDatabase.getInstance();
+                   final DatabaseReference myRef = database.getReference()
+                           .child("Users").child(level_id);
+                   FirebaseAuth auth=FirebaseAuth.getInstance();
+                   myRef.child(auth.getUid()).child("My_level").setValue(MainActivity.My_level+1);
+                   POPDialog.dismiss();
+               }
+            }
+        });
+        ImageButton last=popupView.findViewById(R.id.last);
+        last.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (MyPosition[0]-1>=0){
+                    MyPosition[0] = MyPosition[0]-1;
+                    place_course_inf(name,img,courseList.get(MyPosition[0]));
+                }
+
+            }
+        });
+
+        ImageView close=popupView.findViewById(R.id.back);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                POPDialog.dismiss();
+
+            }
+        });
+        ImageView delete=popupView.findViewById(R.id.delete);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                POPDialog.dismiss();
+
+            }
+        });
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void play_audio() {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+        try {
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(sound_url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
+    }
+
+    private void place_course_inf(TextView name, ImageView img,Course course) {
+        name.setText(course.getName());
+        Picasso.with(mcontext)
+                .load(course.getImage())
+                .placeholder(R.drawable.cat)
+                .into(img);
+        sound_url=course.getSound();
+    }
+
 
 }
 
