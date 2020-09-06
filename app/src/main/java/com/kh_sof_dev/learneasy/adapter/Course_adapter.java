@@ -36,7 +36,7 @@ public class Course_adapter extends RecyclerView.Adapter<Course_adapter.ViewHold
     private View mview;
 
     public interface Selected_item{
-        void Onselcted(Course course);
+        void Onselcted(Course course,int position);
     }
     private  int item_select=-1;
     Selected_item listenner;
@@ -71,7 +71,7 @@ holder.name.setText(mItems.get(position).getName());
         mview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listenner.Onselcted(mItems.get(position));
+                listenner.Onselcted(mItems.get(position),position);
             }
         });
     }

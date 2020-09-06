@@ -1,18 +1,17 @@
 package com.kh_sof_dev.learneasy.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kh_sof_dev.learneasy.Activities.MainActivity;
-import com.kh_sof_dev.learneasy.Fragments.Course_frg;
+import com.kh_sof_dev.learneasy.Activities.Course_Activity;
 import com.kh_sof_dev.learneasy.R;
 import com.kh_sof_dev.learneasy.adapter.Level_adapter;
 import com.kh_sof_dev.learneasy.modul.Level;
@@ -39,6 +38,8 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 init(root);
 loading();
+
+        Log.d("here is HomeFragment: ",   "HomeFragment");
         return root;
     }
 
@@ -82,7 +83,7 @@ loading();
 
 ProgressBar progressBar;
     RecyclerView RV;
-    Context mcontext=getActivity();
+    Context mcontext=getContext();
     Level_adapter adapter;
     List<Level> levelList;
 
@@ -91,19 +92,23 @@ ProgressBar progressBar;
         RV=root.findViewById(R.id.RV);
         RV.setLayoutManager(new GridLayoutManager(mcontext,2));
         levelList=new ArrayList<>();
-        adapter=new Level_adapter(mcontext, levelList, new Level_adapter.Selected_item() {
+        adapter=new Level_adapter(HomeFragment.this.getContext(), levelList, new Level_adapter.Selected_item() {
             @Override
             public void Onselcted(Level level) {
-                switchFGM(new Course_frg(level.getUid()));
+
+                Intent intent=new Intent(getContext(),Course_Activity.class);
+                intent.putExtra("level_id",level.getUid());
+                startActivity(intent);
             }
         });
+        RV.setAdapter(adapter);
 
 
     }
 
     public void switchFGM(Fragment fragment) {
         MainActivity.transaction =getChildFragmentManager().beginTransaction();
-        MainActivity.transaction.replace(R.id.nav_host_fragment, fragment);
+        MainActivity.transaction.replace(R.id.mainContainer, fragment);
         MainActivity.transaction.commit();
     }
 }

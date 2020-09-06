@@ -2,7 +2,7 @@ package com.kh_sof_dev.learneasy.modul;
 
 public class Level {
     private String img,name,uid;
-    private Boolean block;
+    private Boolean block=true;
 
     public Level() {
     }

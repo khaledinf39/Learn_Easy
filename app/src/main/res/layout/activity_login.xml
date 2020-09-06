@@ -17,10 +17,10 @@
          android:layout_height="match_parent"
          >
          <ImageView
-             android:layout_width="70dp"
-             android:layout_height="70dp"
-             android:padding="20dp"
-             android:src="@drawable/ic_close_icon"
+             android:layout_width="50dp"
+             android:layout_height="50dp"
+             android:padding="10dp"
+             android:src="@drawable/ic_close_icon_2"
              app:layout_constraintTop_toTopOf="parent"
              app:layout_constraintLeft_toLeftOf="parent"
              android:id="@+id/close_btn"
@@ -179,9 +179,11 @@ android:drawableLeft="@drawable/ic_check_drawable"
              app:layout_constraintLeft_toLeftOf="parent"
              />
          <ProgressBar
+             android:paddingTop="10dp"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             app:layout_constraintTop_toBottomOf="@+id/ln"
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintBottom_toBottomOf="parent"
              app:layout_constraintRight_toRightOf="parent"
              app:layout_constraintLeft_toLeftOf="parent"
              android:layout_marginTop="10dp"

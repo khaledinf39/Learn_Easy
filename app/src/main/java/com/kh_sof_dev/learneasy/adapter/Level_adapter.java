@@ -71,7 +71,9 @@ holder.name.setText(mItems.get(position).getName());
                 .load(mItems.get(position).getImg())
                 .into(holder.img);
 
-        if (mItems.get(position).getBlock()){
+        if (mItems.get(position).getBlock() && position!=0){
+            holder.lock.setVisibility(View.VISIBLE);
+        }else {
             holder.lock.setVisibility(View.GONE);
         }
         mview.setOnClickListener(new View.OnClickListener() {

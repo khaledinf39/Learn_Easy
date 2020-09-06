@@ -404,6 +404,7 @@ public static int account_type=2;
         }
     }
     private void counter_resendButton() {
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
         mResendButton.setEnabled(false);
         new CountDownTimer(30000, 1000) {
 
@@ -416,6 +417,8 @@ public static int account_type=2;
             public void onFinish() {
                 mResendButton.setEnabled(true);
                 mResendButton.setText("إعادة الارسال");
+                findViewById(R.id.progress).setVisibility(View.GONE);
+
             }
 
         }.start();
@@ -447,6 +450,7 @@ public static int account_type=2;
             case R.id.resend_btn:
                 resendVerificationCode(mPhoneNumberField.getText().toString(), mResendToken);
                 counter_resendButton();
+
                 break;
         }
     }
