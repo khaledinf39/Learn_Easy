@@ -70,6 +70,7 @@ public class Level_adapter extends RecyclerView.Adapter<Level_adapter.ViewHolder
 holder.name.setText(mItems.get(position).getName());
         Picasso.with(mContext)
                 .load(mItems.get(position).getImg())
+                .placeholder(R.drawable.ic_logo)
                 .into(holder.img);
 
         if (MainActivity.My_level!=position && position!=0){

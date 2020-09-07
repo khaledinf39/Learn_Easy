@@ -103,26 +103,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-///get my last level
+
+        switchFGM(new HomeFragment());
+        /////user information
         FirebaseAuth auth=FirebaseAuth.getInstance();
         FirebaseUser user=auth.getCurrentUser();
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
-        DatabaseReference reference=database.getReference().child("Users").child(auth.getUid());
-        reference.child("My_level").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    My_level=dataSnapshot.getValue(Integer.class);
-                }
-                switchFGM(new HomeFragment());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        /////user information
         View headerView = navigationView.getHeaderView(0);
         TextView user_name=headerView.findViewById(R.id.user_name);
         TextView phone=headerView.findViewById(R.id.phone);

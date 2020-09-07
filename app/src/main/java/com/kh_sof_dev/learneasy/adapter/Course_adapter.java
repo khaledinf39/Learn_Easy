@@ -67,6 +67,7 @@ public class Course_adapter extends RecyclerView.Adapter<Course_adapter.ViewHold
 holder.name.setText(mItems.get(position).getName());
         Picasso.with(mContext)
                 .load(mItems.get(position).getImage())
+                .placeholder(R.drawable.ic_logo)
                 .into(holder.img);
 
 ////add action when you click

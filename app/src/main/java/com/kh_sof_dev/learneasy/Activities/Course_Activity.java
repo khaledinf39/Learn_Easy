@@ -3,6 +3,7 @@ package com.kh_sof_dev.learneasy.Activities;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -88,7 +90,7 @@ public class Course_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
+        setContentView(R.layout.courses_activity);
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
      level_id= bundle.getString("level_id");
@@ -139,9 +141,10 @@ public class Course_Activity extends AppCompatActivity {
     Context mcontext=Course_Activity.this;
     Course_adapter adapter;
     List<Course> courseList;
-
+ImageButton back;
     private void init() {
         RV=findViewById(R.id.RV);
+        back=findViewById(R.id.back);
         RV.setLayoutManager(new LinearLayoutManager(mcontext,RecyclerView.VERTICAL,false));
         courseList=new ArrayList<>();
         adapter=new Course_adapter(mcontext, courseList, new Course_adapter.Selected_item() {
@@ -172,9 +175,26 @@ Course_Details_pop(mcontext,position);
                NewCourse_pop(Course_Activity.this);
             }
         });
-
+back.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Finsh();
+    }
+});
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    private void Finsh() {
+        stopPlaying();
+        finish();
+    }
+
     public interface goListenner{
         void Go();
         void Cancel();
@@ -214,6 +234,14 @@ Course_Details_pop(mcontext,position);
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
+                            StorageReference storageReference_img = FirebaseStorage.getInstance().getReference()
+                                    .child(course.getImage());
+                            storageReference_img.delete();
+
+                            StorageReference storageReference_audio = FirebaseStorage.getInstance().getReference()
+                                    .child(course.getSound());
+                            storageReference_audio.delete();
+
                             courseList.remove(course);
                             adapter.notifyDataSetChanged();
                         }
@@ -282,15 +310,22 @@ Course_Details_pop(mcontext,position);
                 e.printStackTrace();
             }
         }else {
-            mPath_sound=data.getData().getPath();
-//            Log.d("file name",data.getType());
+            mPath_sound=data.getData();
+//            Uri file = data.getData();
+//            Toast.makeText(mcontext,data.getData().getLastPathSegment(),Toast.LENGTH_SHORT).show();
         }
 
 
         }
     }
+    private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".")+1);
+        else return "";
+    }
     String mPath=null;
-    String mPath_sound=null;
+    Uri mPath_sound=null;
     String sound_url=null;
     private void save_course(TextView name) {
 
@@ -376,18 +411,11 @@ Course_Details_pop(mcontext,position);
         });
 
 
-        //////*************************Loding  sound*****************************/
+        //////*************************Loading  sound*****************************/
         System.out.println("Start upload sound");
-        InputStream stream1 = null;
-        try {
-            stream = new FileInputStream(new File(mPath_sound));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         final StorageReference ref1 = storage.getReference().child("CourseSound").child(course.getName()+".mp3");
 
-        final UploadTask uploadTask1 = ref1.putStream(stream);
+        final UploadTask uploadTask1 = ref1.putFile(mPath_sound);
 
         uploadTask1.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -568,7 +596,7 @@ Course_Details_pop(mcontext,position);
     }
 
     Boolean isPLAYING=false;
-    MediaPlayer mp;
+    MediaPlayer mp=null;
     private void play_audio() {
 
         if (!isPLAYING) {
@@ -578,6 +606,12 @@ Course_Details_pop(mcontext,position);
                 mp.setDataSource(sound_url);
                 mp.prepare();
                 mp.start();
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        isPLAYING=false;
+                    }
+                });
             } catch (IOException e) {
                 Log.e("Audio", "prepare() failed");
             }
@@ -588,15 +622,17 @@ Course_Details_pop(mcontext,position);
 
     }
     private void stopPlaying() {
+        if (mp!=null){
         mp.release();
         mp = null;
+        }
     }
 
     private void place_course_inf(TextView name, ImageView img,Course course) {
         name.setText(course.getName());
         Picasso.with(mcontext)
                 .load(course.getImage())
-                .placeholder(R.drawable.cat)
+                .placeholder(R.drawable.ic_logo)
                 .into(img);
         sound_url=course.getSound();
     }
