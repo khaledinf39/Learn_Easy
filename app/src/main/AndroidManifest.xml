@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kh_sof_dev.learneasy">
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
@@ -11,20 +9,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Activities.Seplesh_activity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+           >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.Login_activity"/>
-        <activity android:name=".Activities.Course_Activity"/>
-        <activity android:name=".Activities.CourseDetails_activity"/>
-        <activity android:name=".Activities.MainActivity"/>
+
+        <activity android:name=".Activities.Login_activity">
+        </activity>
+        <activity android:name=".Activities.Course_Activity" />
+        <activity android:name=".Activities.MainActivity" />
     </application>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

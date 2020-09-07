@@ -37,6 +37,8 @@ public class Course_adapter extends RecyclerView.Adapter<Course_adapter.ViewHold
 
     public interface Selected_item{
         void Onselcted(Course course,int position);
+        void OnPlay(Course course,int position);
+        void OnDelete(Course course,int position);
     }
     private  int item_select=-1;
     Selected_item listenner;
@@ -67,11 +69,24 @@ holder.name.setText(mItems.get(position).getName());
                 .load(mItems.get(position).getImage())
                 .into(holder.img);
 
-
+////add action when you click
         mview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listenner.Onselcted(mItems.get(position),position);
+            }
+        });
+
+        holder.sound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenner.OnPlay(mItems.get(position),position);
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenner.OnDelete(mItems.get(position),position);
             }
         });
     }
@@ -85,15 +100,15 @@ holder.name.setText(mItems.get(position).getName());
 
      ImageView img;
       TextView name;
-      ImageButton delete,soud;
+      ImageButton delete,sound;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
           name = itemView.findViewById(R.id.name);
             img = itemView.findViewById(R.id.img);
-            delete = itemView.findViewById(R.id.lock);
-            soud = itemView.findViewById(R.id.sound);
+            delete = itemView.findViewById(R.id.delete);
+            sound = itemView.findViewById(R.id.sound);
 
 
         }

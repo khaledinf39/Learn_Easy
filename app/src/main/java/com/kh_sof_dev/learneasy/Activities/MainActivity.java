@@ -28,8 +28,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -99,13 +102,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        switchFGM(new HomeFragment());
 
+///get my last level
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        FirebaseUser user=auth.getCurrentUser();
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference reference=database.getReference().child("Users").child(auth.getUid());
+        reference.child("My_level").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    My_level=dataSnapshot.getValue(Integer.class);
+                }
+                switchFGM(new HomeFragment());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         /////user information
         View headerView = navigationView.getHeaderView(0);
         TextView user_name=headerView.findViewById(R.id.user_name);
         TextView phone=headerView.findViewById(R.id.phone);
-        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
         user_name.setText(user.getDisplayName());
         phone.setText(user.getPhoneNumber());
     }

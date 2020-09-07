@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kh_sof_dev.learneasy.Activities.MainActivity;
 import com.kh_sof_dev.learneasy.R;
 import com.kh_sof_dev.learneasy.modul.Level;
 import com.squareup.picasso.Picasso;
@@ -71,7 +72,7 @@ holder.name.setText(mItems.get(position).getName());
                 .load(mItems.get(position).getImg())
                 .into(holder.img);
 
-        if (mItems.get(position).getBlock() && position!=0){
+        if (MainActivity.My_level!=position && position!=0){
             holder.lock.setVisibility(View.VISIBLE);
         }else {
             holder.lock.setVisibility(View.GONE);
@@ -79,7 +80,12 @@ holder.name.setText(mItems.get(position).getName());
         mview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listenner.Onselcted(mItems.get(position));
+                if (holder.lock.getVisibility()==View.GONE){
+                    listenner.Onselcted(mItems.get(position));
+                }else {
+                    Toast.makeText(mContext,"You should complete previous level before...!"
+                    ,Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -6,4 +6,5 @@
     <color name="bk_white">#fff</color>
     <color name="bk_red">#F44336</color>
     <color name="bk_green">#54CF0F</color>
+    <color name="bk_grey">#616161</color>
 </resources>

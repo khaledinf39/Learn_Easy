@@ -149,6 +149,18 @@ public class Course_Activity extends AppCompatActivity {
             public void Onselcted(Course course,int position) {
 Course_Details_pop(mcontext,position);
             }
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void OnPlay(Course course, int position) {
+                sound_url=course.getSound();
+                play_audio();
+            }
+
+            @Override
+            public void OnDelete(Course course, int position) {
+                Delete_course(course);
+            }
         });
         RV.setAdapter(adapter);
 
@@ -160,6 +172,61 @@ Course_Details_pop(mcontext,position);
                NewCourse_pop(Course_Activity.this);
             }
         });
+
+
+    }
+    public interface goListenner{
+        void Go();
+        void Cancel();
+    }
+    public void Conferme_POP(final Context mContext, final goListenner listenner ){
+        final Dialog dialog=new Dialog(mContext);
+        dialog.setContentView(R.layout.popup_conf);
+        Button conf=dialog.findViewById(R.id.confBtn);
+        Button cancel=dialog.findViewById(R.id.cancelBtn);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenner.Cancel();
+                dialog.dismiss();
+            }
+        });
+        conf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listenner.Go();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void Delete_course(final Course course) {
+
+        Conferme_POP(mcontext, new goListenner() {
+            @Override
+            public void Go() {
+                FirebaseDatabase database=FirebaseDatabase.getInstance();
+                database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference()
+                        .child("Levels").child(Course_Activity.level_id).child("Courses");
+                myRef.child(course.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            courseList.remove(course);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void Cancel() {
+
+            }
+        });
+
 
 
     }
@@ -488,10 +555,10 @@ Course_Details_pop(mcontext,position);
             }
         });
         ImageView delete=popupView.findViewById(R.id.delete);
-        close.setOnClickListener(new View.OnClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Delete_course(courseList.get(MyPosition[0]));
                 POPDialog.dismiss();
 
             }
@@ -500,26 +567,29 @@ Course_Details_pop(mcontext,position);
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    Boolean isPLAYING=false;
+    MediaPlayer mp;
     private void play_audio() {
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
-        try {
-            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(sound_url));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (!isPLAYING) {
+            isPLAYING = true;
+             mp = new MediaPlayer();
+            try {
+                mp.setDataSource(sound_url);
+                mp.prepare();
+                mp.start();
+            } catch (IOException e) {
+                Log.e("Audio", "prepare() failed");
+            }
+        } else {
+            isPLAYING = false;
+            stopPlaying();
         }
-        try {
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
+
+    }
+    private void stopPlaying() {
+        mp.release();
+        mp = null;
     }
 
     private void place_course_inf(TextView name, ImageView img,Course course) {
