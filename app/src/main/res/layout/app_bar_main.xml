@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -19,6 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="#FF043D80"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 

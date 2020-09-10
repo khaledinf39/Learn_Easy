@@ -3,14 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_users">
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.kh_sof_dev.learneasy.ui.home.HomeFragment"
+        android:name="com.kh_sof_dev.learneasy.Fragments.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
 
+        <action
+            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
+            app:destination="@id/nav_users" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_users"
+        android:name="com.kh_sof_dev.learneasy.Fragments.Users_frg"
+        android:label="@string/menu_users"
+        tools:layout="@layout/fragment_users">
+        <action
+            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
+            app:destination="@id/nav_home" />
+
+        <argument
+            android:name="myArg"
+            app:argType="string" />
+    </fragment>
+
 
 </navigation>

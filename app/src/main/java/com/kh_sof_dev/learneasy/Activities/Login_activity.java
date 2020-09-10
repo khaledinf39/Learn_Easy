@@ -262,6 +262,8 @@ public static int account_type=2;
 
                             Map<String, Object> map= new HashMap<>();
                             map.put("FullName",Fullname);
+                            map.put("My_level",1);
+                            map.put("phone",mPhoneNumberField.getText().toString());
                             reference.updateChildren(map);
                             FirebaseUser user1=mAuth.getCurrentUser();
                             UserProfileChangeRequest profile=new UserProfileChangeRequest.Builder()

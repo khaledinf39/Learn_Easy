@@ -15,7 +15,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kh_sof_dev.learneasy.R;
-import com.kh_sof_dev.learneasy.ui.home.HomeFragment;
 
 
 public class Seplesh_activity extends AppCompatActivity {

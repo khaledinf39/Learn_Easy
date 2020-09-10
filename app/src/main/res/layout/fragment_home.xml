@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".Fragments.HomeFragment">
   <ProgressBar
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -28,15 +28,6 @@
       android:layout_marginBottom="20dp"
       android:layout_marginEnd="10dp"/>
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:id="@+id/fab"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|end"
-      android:layout_margin="@dimen/fab_margin"
-      android:src="@drawable/ic_plus_white"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      android:visibility="gone"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
