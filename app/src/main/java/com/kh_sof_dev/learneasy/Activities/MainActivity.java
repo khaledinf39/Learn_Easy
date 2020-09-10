@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         logout.setOnClickListener(this);
 if (!MainActivity.isAdmin){
     Student.setVisibility(View.GONE);
+    fab.setVisibility(View.GONE);
 }
 
         switchFGM(new HomeFragment());

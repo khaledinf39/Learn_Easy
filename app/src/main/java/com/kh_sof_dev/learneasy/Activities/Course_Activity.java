@@ -556,7 +556,7 @@ back.setOnClickListener(new View.OnClickListener() {
                    database = FirebaseDatabase.getInstance();
                    FirebaseAuth auth= FirebaseAuth.getInstance();
                    final DatabaseReference myRef = database.getReference()
-                           .child("Users").child(auth.getUid());
+                           .child("Users");
 
                    myRef.child(auth.getUid()).child("My_level").setValue(MainActivity.My_level+1);
                    POPDialog.dismiss();
@@ -586,6 +586,9 @@ back.setOnClickListener(new View.OnClickListener() {
             }
         });
         ImageView delete=popupView.findViewById(R.id.delete);
+        if (!MainActivity.isAdmin){
+            delete.setVisibility(View.GONE);
+        }
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

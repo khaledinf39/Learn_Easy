@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kh_sof_dev.learneasy.Activities.MainActivity;
 import com.kh_sof_dev.learneasy.R;
 import com.kh_sof_dev.learneasy.modul.Course;
 import com.kh_sof_dev.learneasy.modul.Level;
@@ -69,7 +70,9 @@ holder.name.setText(mItems.get(position).getName());
                 .load(mItems.get(position).getImage())
                 .placeholder(R.drawable.ic_logo)
                 .into(holder.img);
-
+        if (!MainActivity.isAdmin){
+            holder.delete.setVisibility(View.GONE);
+        }
 ////add action when you click
         mview.setOnClickListener(new View.OnClickListener() {
             @Override

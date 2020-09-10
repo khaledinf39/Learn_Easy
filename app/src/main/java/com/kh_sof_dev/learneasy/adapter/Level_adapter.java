@@ -73,10 +73,10 @@ holder.name.setText(mItems.get(position).getName());
                 .placeholder(R.drawable.ic_logo)
                 .into(holder.img);
 
-        if ((MainActivity.My_level!=position && position!=0) && !MainActivity.isAdmin){
-            holder.lock.setVisibility(View.VISIBLE);
-        }else {
+        if (MainActivity.My_level==position+1 || MainActivity.isAdmin){
             holder.lock.setVisibility(View.GONE);
+        }else {
+            holder.lock.setVisibility(View.VISIBLE);
         }
         mview.setOnClickListener(new View.OnClickListener() {
             @Override
