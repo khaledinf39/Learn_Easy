@@ -142,7 +142,11 @@ Course_Details_pop(mcontext,position);
             @Override
             public void OnPlay(Course course, int position) {
                 sound_url=course.getSound();
-                play_audio();
+                Log.d("sound_url",sound_url);
+                if (sound_url!=null){
+                    play_audio();
+                }
+
             }
 
             @Override
@@ -153,7 +157,9 @@ Course_Details_pop(mcontext,position);
         RV.setAdapter(adapter);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
+        if (!MainActivity.isAdmin){
+            fab.setVisibility(View.GONE);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,13 +225,22 @@ back.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            StorageReference storageReference_img = FirebaseStorage.getInstance().getReference()
-                                    .child(course.getImage());
-                            storageReference_img.delete();
+                          try {
+                              StorageReference storageReference_img = FirebaseStorage.getInstance().getReference()
+                                      .child(course.getImage());
+                              storageReference_img.delete();
+                          } catch (Exception e) {
+                              e.printStackTrace();
+                          }
 
-                            StorageReference storageReference_audio = FirebaseStorage.getInstance().getReference()
-                                    .child(course.getSound());
-                            storageReference_audio.delete();
+                            try {
+                                StorageReference storageReference_audio = FirebaseStorage.getInstance().getReference()
+                                        .child(course.getSound());
+                                storageReference_audio.delete();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                             courseList.remove(course);
                             adapter.notifyDataSetChanged();
@@ -312,7 +327,7 @@ back.setOnClickListener(new View.OnClickListener() {
     String mPath=null;
     Uri mPath_sound=null;
     String sound_url=null;
-    private void save_course(TextView name) {
+    private void save_course(final TextView name) {
 
         if (name.getText().toString().isEmpty()){
             name.setError(name.getHint());
@@ -344,56 +359,10 @@ back.setOnClickListener(new View.OnClickListener() {
         dialog.setMessage(msg);
         dialog.show();
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
         final String key = myRef.push().getKey();
-        myRef.child(key).setValue(course);
-
-        //////*************************Loding  image*****************************/
-        System.out.println("Start upload images");
-        InputStream stream = null;
-        try {
-            stream = new FileInputStream(new File(mPath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        final StorageReference ref = storage.getReference().child("CourseImage").child(course.getName() + ".jpg");
-
-        final UploadTask uploadTask = ref.putStream(stream);
-
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//
-                double progress = (-100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                Log.d(TAG, "onProgress: " + progress);
-                System.out.println("Upload is " + progress + "% done");
-                dialog.setMessage(msg+"\n"+
-                        " Uploaded " + progress + "% ");
-
-            }
-        });
-        uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                // GET THE IMAGE DOWNLOAD URL
-
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        System.out.println("uri " + uri.toString());
-                        Log.d(TAG, "onSuccess: the image uploaded " + uri.toString());
-                        course.setImage(uri.toString());
-                        mPath=null;
 
 
-                    }
-
-                });
-
-            }
-        });
 
 
         //////*************************Loading  sound*****************************/
@@ -425,16 +394,64 @@ back.setOnClickListener(new View.OnClickListener() {
                     public void onSuccess(Uri uri) {
                         System.out.println("uri " + uri.toString());
                         Log.d(TAG, "onSuccess: the image and sound uploaded " + uri.toString());
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("image", course.getImage());
-                        map.put("sound", uri.toString());
-                        myRef.child(key).updateChildren(map);
-                        /********************** finsh****************/
-                        dialog.dismiss();
-                        Toast.makeText(Course_Activity.this,
-                                "Done with Successfully  ..!"
-                                , Toast.LENGTH_LONG).show();
-                        mPath_sound=null;
+
+                       sound_url=uri.toString();
+                        //////*************************Loding  image*****************************/
+                        System.out.println("Start upload images");
+                        InputStream stream = null;
+                        try {
+                            stream = new FileInputStream(new File(mPath));
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        final StorageReference ref = storage.getReference().child("CourseImage").child(course.getName() + ".jpg");
+
+                        final UploadTask uploadTask = ref.putStream(stream);
+
+                        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//
+                                double progress = (-100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                                Log.d(TAG, "onProgress: " + progress);
+                                System.out.println("Upload is " + progress + "% done");
+                                dialog.setMessage(msg+"\n"+
+                                        " Uploaded " + progress + "% ");
+
+                            }
+                        });
+                        uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                // GET THE IMAGE DOWNLOAD URL
+
+                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Map<String, Object> map = new HashMap<>();
+                                        map.put("sound", sound_url);
+                                        map.put("name", name.getText().toString());
+                                        map.put("image", uri.toString());
+                                        myRef.child(key).updateChildren(map);
+                                        mPath=null;
+                                        sound_url=null;
+                                        mPath_sound=null;
+                                        /********************** finsh****************/
+                                        dialog.dismiss();
+                                        Toast.makeText(Course_Activity.this,
+                                                "Done with Successfully  ..!"
+                                                , Toast.LENGTH_LONG).show();
+
+
+                                    }
+
+                                });
+
+                            }
+                        });
+
 
                     }
 
@@ -540,7 +557,7 @@ back.setOnClickListener(new View.OnClickListener() {
                    FirebaseAuth auth= FirebaseAuth.getInstance();
                    final DatabaseReference myRef = database.getReference()
                            .child("Users").child(auth.getUid());
-                   FirebaseAuth auth=FirebaseAuth.getInstance();
+
                    myRef.child(auth.getUid()).child("My_level").setValue(MainActivity.My_level+1);
                    POPDialog.dismiss();
                }

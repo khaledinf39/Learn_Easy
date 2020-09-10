@@ -33,6 +33,13 @@ public class Seplesh_activity extends AppCompatActivity {
                 FirebaseAuth auth= FirebaseAuth.getInstance();
                 FirebaseUser user=auth.getCurrentUser();
                 if (user!=null){
+                    if (user.getPhoneNumber().equals("+213672886642")){
+                        MainActivity.isAdmin=true;
+                        Intent intent = new Intent(Seplesh_activity.this, MainActivity.class);
+                        startActivity(intent );
+                        finish();
+                        return;
+                    }
                     ///get my last level
 
                     FirebaseDatabase database=FirebaseDatabase.getInstance();

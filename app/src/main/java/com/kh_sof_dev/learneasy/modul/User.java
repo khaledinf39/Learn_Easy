@@ -7,12 +7,12 @@ public class User {
     public User() {
     }
 
-    public String getName() {
+    public String getFullName() {
         return FullName;
     }
 
-    public void setName(String name) {
-        this.FullName = name;
+    public void setFullName(String fullName) {
+        FullName = fullName;
     }
 
     public String getPhone() {
@@ -23,19 +23,19 @@ public class User {
         this.phone = phone;
     }
 
-    public int getLevel() {
-        return My_level;
-    }
-
-    public void setLevel(int level) {
-        this.My_level = level;
-    }
-
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public int getMy_level() {
+        return My_level;
+    }
+
+    public void setMy_level(int my_level) {
+        My_level = my_level;
     }
 }

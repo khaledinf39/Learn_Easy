@@ -73,7 +73,7 @@ holder.name.setText(mItems.get(position).getName());
                 .placeholder(R.drawable.ic_logo)
                 .into(holder.img);
 
-        if (MainActivity.My_level!=position && position!=0){
+        if ((MainActivity.My_level!=position && position!=0) && !MainActivity.isAdmin){
             holder.lock.setVisibility(View.VISIBLE);
         }else {
             holder.lock.setVisibility(View.GONE);

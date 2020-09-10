@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="10dp"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:paddingBottom="20dp">
 
 
             <TextView
@@ -23,8 +24,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
-                android:textColor="#000000"
+                android:textSize="20dp"
+                android:textColor="@color/colorAccent"
                 android:gravity="center"
                 android:text="khaled zaid"
                app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +37,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
-                android:textColor="#000000"
+                android:textSize="18dp"
+                android:textColor="@color/bk_grey"
                 android:gravity="center"
                 android:text="00213669203134"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,15 +50,15 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
-                android:textColor="#000000"
+                android:textSize="18dp"
+                android:textColor="@color/bk_green"
                 android:gravity="center"
                 android:text="My Level : 1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/phone"
                 android:id="@+id/level"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="20dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

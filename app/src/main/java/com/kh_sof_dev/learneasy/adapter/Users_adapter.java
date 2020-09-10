@@ -63,9 +63,9 @@ public class Users_adapter extends RecyclerView.Adapter<Users_adapter.ViewHolder
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.name.setText(mItems.get(position).getName());
+        holder.name.setText(mItems.get(position).getFullName());
         holder.phone.setText(mItems.get(position).getPhone());
-        holder.level.setText("My Level : "+mItems.get(position).getLevel());
+        holder.level.setText("My Level : "+mItems.get(position).getMy_level());
 
 ////add action when you click
         mview.setOnClickListener(new View.OnClickListener() {

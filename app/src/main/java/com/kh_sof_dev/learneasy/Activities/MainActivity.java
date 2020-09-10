@@ -35,11 +35,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kh_sof_dev.learneasy.Fragments.Users_frg;
 import com.kh_sof_dev.learneasy.R;
 import com.kh_sof_dev.learneasy.modul.Course;
 import com.kh_sof_dev.learneasy.modul.Level;
 import com.kh_sof_dev.learneasy.modul.ResizePickedImage;
 import com.kh_sof_dev.learneasy.Fragments.HomeFragment;
+import com.yarolegovich.slidingrootnav.SlideGravity;
+import com.yarolegovich.slidingrootnav.SlidingRootNav;
+import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -62,92 +66,62 @@ import java.util.Map;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static int My_level=1;
+    public static boolean isAdmin=false;
     private AppBarConfiguration mAppBarConfiguration;
-
+    private SlidingRootNav nav;
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        /************************* Drawer*******************/
+        Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_users)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//    NewLevel_pop(MainActivity.this);
-//            }
-//        });
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-//        NavigationView navigationView = findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()){
-//                    case R.id.nav_home:
-//                        switchFGM(new HomeFragment());
-//                        Log.d(TAG, "HomeFragment: " + "HomeFragment");
-//
-//                        return true;
-//                    case R.id.nav_logout:
-//                        FirebaseAuth auth=FirebaseAuth.getInstance();
-//                        auth.signOut();
-//                        finish();
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
-//        navigationView = findViewById(R.id.nav_view);
-
-//         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//
-//        NavigationUI.setupActionBarWithNavController(this, navController, drawer);
-//
-//        NavigationUI.setupWithNavController(navigationView, navController);
-
-        navigationView.setNavigationItemSelectedListener(this);
-//
+         fab = findViewById(R.id.fab);
+        nav= new SlidingRootNavBuilder(this)
+                .withToolbarMenuToggle(toolbar)
+                .withDragDistance(250)
+                .withRootViewScale(1f)
+                .withMenuOpened(false)
+                .withGravity(SlideGravity.LEFT)
+                .withMenuLayout(R.layout.navigation_content)
+                .inject();
+        View navigation = findViewById(R.id.nav_view);
+        TextView Home = navigation.findViewById(R.id.home);
+        TextView Student = navigation.findViewById(R.id.student);
+        TextView logout = navigation.findViewById(R.id.logout);
+        fab.setOnClickListener(this);
+        Home.setOnClickListener(this);
+        Student.setOnClickListener(this);
+        logout.setOnClickListener(this);
+if (!MainActivity.isAdmin){
+    Student.setVisibility(View.GONE);
+}
 
         switchFGM(new HomeFragment());
         /////user information
         FirebaseAuth auth=FirebaseAuth.getInstance();
         FirebaseUser user=auth.getCurrentUser();
-        View headerView = navigationView.getHeaderView(0);
-        TextView user_name=headerView.findViewById(R.id.user_name);
-        TextView phone=headerView.findViewById(R.id.phone);
-        user_name.setText(user.getDisplayName());
-        phone.setText(user.getPhoneNumber());
+       if (user!=null) {
+           TextView user_name = navigation.findViewById(R.id.user_name);
+           TextView phone = navigation.findViewById(R.id.phone);
+           user_name.setText(user.getDisplayName());
+           phone.setText(user.getPhoneNumber());
+       }
+       else {
+           logout.setVisibility(View.GONE);
+       }
+
+
     }
     public static FragmentTransaction transaction;
     public  void switchFGM(Fragment fragment) {
-//        MainActivity.transaction = getSupportFragmentManager().beginTransaction();
-//        MainActivity.transaction.replace(R.id.mainContainer, fragment);
-//        MainActivity.transaction.commit();
+        MainActivity.transaction = getSupportFragmentManager().beginTransaction();
+        MainActivity.transaction.replace(R.id.mainContainer, fragment);
+        MainActivity.transaction.commit();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -365,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     , Toast.LENGTH_LONG).show();
             return;
         }
-        Level level=new Level();
+        final Level level=new Level();
         level.setName(name.getText().toString());
 
         //////*************************Loding*****************************/
@@ -383,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final String key = myRef.push().getKey();
-        myRef.child(key).setValue(level);
+
         System.out.println("Start upload images");
         InputStream stream = null;
         try {
@@ -419,9 +393,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onSuccess(Uri uri) {
                         System.out.println("uri " + uri.toString());
                         Log.d(TAG, "onSuccess: the image uploaded " + uri.toString());
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("img", uri.toString());
-                        myRef.child(key).updateChildren(map);
+//                        Map<String, Object> map = new HashMap<>();
+//                        map.put("img", uri.toString());
+//                        myRef.child(key).updateChildren(map);
+                        level.setImg(uri.toString());
+                        myRef.child(key).setValue(level);
                         /********************** finsh****************/
                         dialog.dismiss();
                         Toast.makeText(MainActivity.this,
@@ -539,9 +515,32 @@ mBottomSheetDialog.cancel();
 
     }
 
+
+
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_SHORT).show();
-        return false;
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.home:{
+                switchFGM (new HomeFragment());
+                fab.setVisibility(View.VISIBLE);
+                break;
+            }
+
+            case R.id.student:{
+                switchFGM (new Users_frg());
+                fab.setVisibility(View.GONE);
+                break;
+            }
+            case R.id.logout:{
+               FirebaseAuth auth=FirebaseAuth.getInstance();
+               auth.signOut();
+               finish();
+                break;
+            }
+            case R.id.fab:{
+                NewLevel_pop(MainActivity.this);
+                break;
+            }
+        }
     }
 }
